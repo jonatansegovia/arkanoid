@@ -21,6 +21,8 @@ const ctx = canvas.getContext("2d");
 const overlay = document.getElementById("overlay");
 const overlayTitle = document.getElementById("overlay-title");
 const overlayMessage = document.getElementById("overlay-message");
+const scoreEl = document.getElementById("score");
+const livesEl = document.getElementById("lives");
 
 // Estado de la paleta
 const paddle = {
@@ -80,6 +82,9 @@ const keys = {
   ArrowRight: false
 };
 
+// Guarda el estado previo a pausar, para poder reanudarlo
+let statusBeforePause = "waiting";
+
 function init() {
   setupInput();
   createBricks();
@@ -121,6 +126,28 @@ function checkWin() {
   }
 }
 
+function togglePause() {
+  if (gameState.status === "gameover" || gameState.status === "win") return;
+
+  if (gameState.status === "paused") {
+    gameState.status = statusBeforePause;
+    hideOverlay();
+  } else {
+    statusBeforePause = gameState.status;
+    gameState.status = "paused";
+    showOverlay("Pausado", "Presiona P para reanudar");
+  }
+}
+
+function resetGame() {
+  gameState.score = 0;
+  gameState.lives = INITIAL_LIVES;
+  gameState.status = "waiting";
+  hideOverlay();
+  createBricks();
+  resetBall();
+}
+
 function showOverlay(title, message) {
   overlayTitle.textContent = title;
   overlayMessage.textContent = message;
@@ -138,6 +165,12 @@ function setupInput() {
     }
     if (e.key === "ArrowUp" || e.key === " ") {
       launchBall();
+    }
+    if (e.key === "p" || e.key === "P") {
+      togglePause();
+    }
+    if (e.key === "r" || e.key === "R") {
+      resetGame();
     }
   });
 
@@ -285,12 +318,22 @@ function collideWithWalls() {
 }
 
 function loop(timestamp) {
-  if (gameState.status !== "gameover" && gameState.status !== "win") {
+  if (
+    gameState.status !== "gameover" &&
+    gameState.status !== "win" &&
+    gameState.status !== "paused"
+  ) {
     updatePaddle();
     updateBall();
   }
   draw();
+  updateInfoPanel();
   requestAnimationFrame(loop);
+}
+
+function updateInfoPanel() {
+  scoreEl.textContent = gameState.score;
+  livesEl.textContent = gameState.lives;
 }
 
 function draw() {
