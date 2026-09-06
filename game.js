@@ -18,6 +18,9 @@ const BRICK_SCORE = 10;
 // Referencias al DOM
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const overlay = document.getElementById("overlay");
+const overlayTitle = document.getElementById("overlay-title");
+const overlayMessage = document.getElementById("overlay-message");
 
 // Estado de la paleta
 const paddle = {
@@ -101,6 +104,33 @@ function launchBall() {
   gameState.status = "playing";
 }
 
+function loseLife() {
+  gameState.lives--;
+  if (gameState.lives > 0) {
+    resetBall();
+  } else {
+    gameState.status = "gameover";
+    showOverlay("Game Over", `Puntaje final: ${gameState.score}`);
+  }
+}
+
+function checkWin() {
+  if (gameState.bricksRemaining === 0) {
+    gameState.status = "win";
+    showOverlay("¡Ganaste!", `Puntaje final: ${gameState.score}`);
+  }
+}
+
+function showOverlay(title, message) {
+  overlayTitle.textContent = title;
+  overlayMessage.textContent = message;
+  overlay.style.display = "flex";
+}
+
+function hideOverlay() {
+  overlay.style.display = "none";
+}
+
 function setupInput() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
@@ -182,6 +212,7 @@ function collideWithBricks() {
       brick.alive = false;
       gameState.score += BRICK_SCORE;
       gameState.bricksRemaining--;
+      checkWin();
 
       const overlapLeft = ballRight - brick.x;
       const overlapRight = brick.x + brick.width - ballLeft;
@@ -249,13 +280,15 @@ function collideWithWalls() {
   }
 
   if (ball.y > CANVAS_HEIGHT) {
-    // Rutina de pérdida de vida: se implementa en el Paso 7 (loseLife)
+    loseLife();
   }
 }
 
 function loop(timestamp) {
-  updatePaddle();
-  updateBall();
+  if (gameState.status !== "gameover" && gameState.status !== "win") {
+    updatePaddle();
+    updateBall();
+  }
   draw();
   requestAnimationFrame(loop);
 }
