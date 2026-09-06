@@ -126,6 +126,40 @@ function updateBall() {
   ball.x += ball.vx;
   ball.y += ball.vy;
   collideWithWalls();
+  collideWithPaddle();
+}
+
+function collideWithPaddle() {
+  const paddleLeft = paddle.x - paddle.width / 2;
+  const paddleRight = paddle.x + paddle.width / 2;
+  const paddleTop = paddle.y;
+  const paddleBottom = paddle.y + paddle.height;
+
+  const ballBottom = ball.y + ball.radius;
+  const ballTop = ball.y - ball.radius;
+  const ballLeft = ball.x - ball.radius;
+  const ballRight = ball.x + ball.radius;
+
+  const intersects =
+    ballRight > paddleLeft &&
+    ballLeft < paddleRight &&
+    ballBottom > paddleTop &&
+    ballTop < paddleBottom;
+
+  if (!intersects || ball.vy < 0) return;
+
+  const hitPosition = (ball.x - paddleLeft) / paddle.width; // 0..1
+
+  if (hitPosition < 1 / 3) {
+    ball.vx = -3;
+  } else if (hitPosition > 2 / 3) {
+    ball.vx = 3;
+  } else {
+    ball.vx = 0;
+  }
+  ball.vy = -5;
+
+  ball.y = paddleTop - ball.radius;
 }
 
 function collideWithWalls() {
