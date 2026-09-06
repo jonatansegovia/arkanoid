@@ -9,6 +9,11 @@ const PADDLE_HEIGHT = 14;
 const PADDLE_SPEED = 7;
 const BALL_RADIUS = 8;
 const BALL_LAUNCH_VY = -5;
+const BRICK_WIDTH = 90;
+const BRICK_HEIGHT = 15;
+const BRICK_GAP = 6;
+const BRICK_OFFSET_TOP = 60;
+const BRICK_SCORE = 10;
 
 // Referencias al DOM
 const canvas = document.getElementById("gameCanvas");
@@ -41,6 +46,31 @@ const gameState = {
   bricksRemaining: 0
 };
 
+// Cuadrícula de ladrillos (5 filas x 8 columnas)
+let bricks = [];
+
+function createBricks() {
+  bricks = [];
+  const gridWidth = BRICK_COLS * BRICK_WIDTH + (BRICK_COLS - 1) * BRICK_GAP;
+  const offsetX = (CANVAS_WIDTH - gridWidth) / 2;
+
+  for (let row = 0; row < BRICK_ROWS; row++) {
+    const rowBricks = [];
+    for (let col = 0; col < BRICK_COLS; col++) {
+      rowBricks.push({
+        x: offsetX + col * (BRICK_WIDTH + BRICK_GAP),
+        y: BRICK_OFFSET_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
+        width: BRICK_WIDTH,
+        height: BRICK_HEIGHT,
+        alive: true
+      });
+    }
+    bricks.push(rowBricks);
+  }
+
+  gameState.bricksRemaining = BRICK_COLS * BRICK_ROWS;
+}
+
 // Estado de teclas presionadas
 const keys = {
   ArrowLeft: false,
@@ -49,6 +79,7 @@ const keys = {
 
 function init() {
   setupInput();
+  createBricks();
   resetBall();
   requestAnimationFrame(loop);
 }
@@ -127,6 +158,47 @@ function updateBall() {
   ball.y += ball.vy;
   collideWithWalls();
   collideWithPaddle();
+  collideWithBricks();
+}
+
+function collideWithBricks() {
+  for (const row of bricks) {
+    for (const brick of row) {
+      if (!brick.alive) continue;
+
+      const ballBottom = ball.y + ball.radius;
+      const ballTop = ball.y - ball.radius;
+      const ballLeft = ball.x - ball.radius;
+      const ballRight = ball.x + ball.radius;
+
+      const intersects =
+        ballRight > brick.x &&
+        ballLeft < brick.x + brick.width &&
+        ballBottom > brick.y &&
+        ballTop < brick.y + brick.height;
+
+      if (!intersects) continue;
+
+      brick.alive = false;
+      gameState.score += BRICK_SCORE;
+      gameState.bricksRemaining--;
+
+      const overlapLeft = ballRight - brick.x;
+      const overlapRight = brick.x + brick.width - ballLeft;
+      const overlapTop = ballBottom - brick.y;
+      const overlapBottom = brick.y + brick.height - ballTop;
+      const minOverlapX = Math.min(overlapLeft, overlapRight);
+      const minOverlapY = Math.min(overlapTop, overlapBottom);
+
+      if (minOverlapX < minOverlapY) {
+        ball.vx = -ball.vx;
+      } else {
+        ball.vy = -ball.vy;
+      }
+
+      return;
+    }
+  }
 }
 
 function collideWithPaddle() {
@@ -190,8 +262,19 @@ function loop(timestamp) {
 
 function draw() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  drawBricks();
   drawPaddle();
   drawBall();
+}
+
+function drawBricks() {
+  ctx.fillStyle = "#4dd0e1";
+  for (const row of bricks) {
+    for (const brick of row) {
+      if (!brick.alive) continue;
+      ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+    }
+  }
 }
 
 function drawBall() {
