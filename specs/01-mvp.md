@@ -1,6 +1,6 @@
 # MVP del Juego Arkanoid
 
-**Estado:** Draft  
+**Estado:** Aprobado  
 **Depends on:** —  
 **Date:** 2026-08-29  
 **Objetivo:** Construir un MVP jugable de Arkanoid con paleta, bola, ladrillos, puntaje y vidas, usando formas simples de Canvas y sin sonido.
