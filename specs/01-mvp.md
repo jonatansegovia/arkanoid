@@ -191,28 +191,28 @@ Cada paso deja el juego en estado funcional (jugable, si es posible).
 
 ## Criterios de Aceptación
 
-- [ ] La paleta se mueve suavemente con flechas izquierda/derecha
-- [ ] La paleta se mueve con el ratón (horizontal)
-- [ ] La bola aparece sobre la paleta y sigue su movimiento horizontal antes de lanzarse
-- [ ] La bola se lanza hacia arriba al presionar Flecha Arriba o Espacio
-- [ ] La bola rebota en las paredes izquierda/derecha del canvas
-- [ ] La bola rebota en el techo del canvas
-- [ ] La bola rebota en la paleta; el ángulo de rebote varía según el punto de impacto (izquierda ≠ centro ≠ derecha)
-- [ ] Se muestran todos los ladrillos (8×5) en la pantalla inicialmente
-- [ ] Al golpear un ladrillo con la bola, el ladrillo desaparece
-- [ ] El puntaje aumenta en 10 puntos cada vez que se destruye un ladrillo
-- [ ] Al caer la bola por debajo de la paleta, se pierde una vida
-- [ ] Después de perder una vida, la bola se reinicia sobre la paleta (estado de espera)
-- [ ] Cuando las vidas llegan a 0, aparece pantalla de "Game Over" con el puntaje final
-- [ ] Cuando todos los ladrillos son destruidos, aparece pantalla de "Ganaste" con el puntaje final
-- [ ] Presionar `P` pausa el juego (overlay visible, movimiento detenido)
-- [ ] Presionar `P` nuevamente reanuda el juego
-- [ ] Presionar `R` reinicia el juego completamente (score a 0, vidas a 3, ladrillos regenerados)
-- [ ] El panel de info muestra score y vidas actualizados en tiempo real
-- [ ] El canvas es de 800×600 píxeles
-- [ ] No hay dependencias externas (vanilla JS, sin librerías)
-- [ ] No hay errores en la consola del navegador
-- [ ] No hay sonidos reproducidos
+- [x] La paleta se mueve suavemente con flechas izquierda/derecha
+- [x] La paleta se mueve con el ratón (horizontal)
+- [x] La bola aparece sobre la paleta y sigue su movimiento horizontal antes de lanzarse
+- [x] La bola se lanza hacia arriba al presionar Flecha Arriba o Espacio
+- [x] La bola rebota en las paredes izquierda/derecha del canvas
+- [x] La bola rebota en el techo del canvas
+- [x] La bola rebota en la paleta; el ángulo de rebote varía según el punto de impacto (izquierda ≠ centro ≠ derecha)
+- [x] Se muestran todos los ladrillos (8×5) en la pantalla inicialmente
+- [x] Al golpear un ladrillo con la bola, el ladrillo desaparece
+- [x] El puntaje aumenta en 10 puntos cada vez que se destruye un ladrillo
+- [x] Al caer la bola por debajo de la paleta, se pierde una vida
+- [x] Después de perder una vida, la bola se reinicia sobre la paleta (estado de espera)
+- [x] Cuando las vidas llegan a 0, aparece pantalla de "Game Over" con el puntaje final
+- [x] Cuando todos los ladrillos son destruidos, aparece pantalla de "Ganaste" con el puntaje final
+- [x] Presionar `P` pausa el juego (overlay visible, movimiento detenido)
+- [x] Presionar `P` nuevamente reanuda el juego
+- [x] Presionar `R` reinicia el juego completamente (score a 0, vidas a 3, ladrillos regenerados)
+- [x] El panel de info muestra score y vidas actualizados en tiempo real
+- [x] El canvas es de 800×600 píxeles
+- [x] No hay dependencias externas (vanilla JS, sin librerías)
+- [x] No hay errores en la consola del navegador
+- [x] No hay sonidos reproducidos
 
 ---
 
