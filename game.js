@@ -55,6 +55,9 @@ const gameState = {
 // Cuadrícula de ladrillos (5 filas x 8 columnas)
 let bricks = [];
 
+// Explosiones activas
+let explosions = [];
+
 function createBricks() {
   bricks = [];
   const gridWidth = BRICK_COLS * BRICK_WIDTH + (BRICK_COLS - 1) * BRICK_GAP;
@@ -226,6 +229,10 @@ function updateBall() {
   collideWithBricks();
 }
 
+function updateExplosions(timestamp) {
+  explosions = explosions.filter(exp => timestamp - exp.startTime < EXPLOSION_DURATION);
+}
+
 function collideWithBricks() {
   for (const row of bricks) {
     for (const brick of row) {
@@ -327,8 +334,9 @@ function loop(timestamp) {
   ) {
     updatePaddle();
     updateBall();
+    updateExplosions(timestamp);
   }
-  draw();
+  draw(timestamp);
   updateInfoPanel();
   requestAnimationFrame(loop);
 }
@@ -338,9 +346,10 @@ function updateInfoPanel() {
   livesEl.textContent = gameState.lives;
 }
 
-function draw() {
+function draw(timestamp) {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawBricks();
+  drawExplosions(timestamp);
   drawPaddle();
   drawBall();
 }
@@ -351,6 +360,15 @@ function drawBricks() {
       if (!brick.alive) continue;
       drawSprite(ctx, 'block_' + brick.color, brick.x, brick.y, brick.width, brick.height);
     }
+  }
+}
+
+function drawExplosions(timestamp) {
+  for (const exp of explosions) {
+    const elapsed = timestamp - exp.startTime;
+    const progress = Math.min(elapsed / EXPLOSION_DURATION, 1);
+    const frameIndex = Math.floor(progress * 4);
+    drawExplosionFrame(ctx, exp.color, frameIndex, exp.x, exp.y, exp.width, exp.height);
   }
 }
 
