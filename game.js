@@ -346,11 +346,10 @@ function draw() {
 }
 
 function drawBricks() {
-  ctx.fillStyle = "#4dd0e1";
   for (const row of bricks) {
     for (const brick of row) {
       if (!brick.alive) continue;
-      ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+      drawSprite(ctx, 'block_' + brick.color, brick.x, brick.y, brick.width, brick.height);
     }
   }
 }
