@@ -89,7 +89,7 @@ function init() {
   setupInput();
   createBricks();
   resetBall();
-  requestAnimationFrame(loop);
+  loadSpritesheet(() => requestAnimationFrame(loop));
 }
 
 function resetBall() {
