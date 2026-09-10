@@ -216,7 +216,7 @@ function updatePaddle() {
   }
 }
 
-function updateBall() {
+function updateBall(timestamp) {
   if (!ball.launched) {
     ball.x = paddle.x;
     ball.y = paddle.y - paddle.height - ball.radius;
@@ -226,14 +226,14 @@ function updateBall() {
   ball.y += ball.vy;
   collideWithWalls();
   collideWithPaddle();
-  collideWithBricks();
+  collideWithBricks(timestamp);
 }
 
 function updateExplosions(timestamp) {
   explosions = explosions.filter(exp => timestamp - exp.startTime < EXPLOSION_DURATION);
 }
 
-function collideWithBricks() {
+function collideWithBricks(timestamp) {
   for (const row of bricks) {
     for (const brick of row) {
       if (!brick.alive) continue;
@@ -252,6 +252,14 @@ function collideWithBricks() {
       if (!intersects) continue;
 
       brick.alive = false;
+      explosions.push({
+        x: brick.x,
+        y: brick.y,
+        width: brick.width,
+        height: brick.height,
+        color: brick.color,
+        startTime: timestamp
+      });
       gameState.score += BRICK_SCORE;
       gameState.bricksRemaining--;
       checkWin();
@@ -333,7 +341,7 @@ function loop(timestamp) {
     gameState.status !== "paused"
   ) {
     updatePaddle();
-    updateBall();
+    updateBall(timestamp);
     updateExplosions(timestamp);
   }
   draw(timestamp);
