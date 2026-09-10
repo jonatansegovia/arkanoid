@@ -149,6 +149,7 @@ function resetGame() {
   gameState.lives = INITIAL_LIVES;
   gameState.status = "waiting";
   hideOverlay();
+  explosions = [];
   createBricks();
   resetBall();
 }
