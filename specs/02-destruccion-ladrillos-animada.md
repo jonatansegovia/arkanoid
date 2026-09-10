@@ -1,6 +1,6 @@
 # Destrucción Animada de Ladrillos
 
-**Estado:** Borrador
+**Estado:** Aprobado
 **Depends on:** SPEC 01
 **Date:** 2026-09-10
 **Objetivo:** Reemplazar la desaparición instantánea de los ladrillos por una animación de explosión de 4 frames tomada del spritesheet existente, sin agregar sonido.

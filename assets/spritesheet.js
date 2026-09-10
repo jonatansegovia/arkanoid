@@ -64,3 +64,8 @@ function drawSprite( ctx, name, x, y, w, h ) {
   if ( !sp ) return;
   ctx.drawImage( ssImg, sp.sx, sp.sy, sp.sw, sp.sh, x, y, w, h );
 }
+
+function drawExplosionFrame( ctx, color, frameIndex, x, y, w, h ) {
+  if ( !ssLoaded ) return;
+  drawFrame( ctx, EXPLOSION_FRAMES[ color ][ frameIndex ], x, y, w, h );
+}
