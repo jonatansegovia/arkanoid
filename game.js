@@ -61,6 +61,19 @@ const LEVEL_LAYOUTS = [
   ],
 ];
 
+// Objetos de audio reutilizados (uno por efecto)
+const SOUND_BALL_BOUNCE = new Audio('assets/sounds/ball-bounce.mp3');
+const SOUND_BREAK = new Audio('assets/sounds/break-sound.mp3');
+
+// Estado de mute, fuera de gameState (no se resetea con R)
+let muted = false;
+
+function playSound(audio) {
+  if (muted) return;
+  audio.currentTime = 0;
+  audio.play();
+}
+
 // Referencias al DOM
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -70,6 +83,7 @@ const overlayMessage = document.getElementById("overlay-message");
 const scoreEl = document.getElementById("score");
 const livesEl = document.getElementById("lives");
 const levelEl = document.getElementById("level");
+const soundStatusEl = document.getElementById("sound-status");
 
 // Estado de la paleta
 const paddle = {
@@ -260,6 +274,9 @@ function setupInput() {
     if (e.key === "r" || e.key === "R") {
       resetGame();
     }
+    if (e.key === "m" || e.key === "M") {
+      muted = !muted;
+    }
   });
 
   document.addEventListener("keyup", (e) => {
@@ -349,6 +366,8 @@ function collideWithBricks(timestamp) {
       gameState.bricksRemaining--;
       checkWin();
 
+      playSound(SOUND_BREAK);
+
       const overlapLeft = ballRight - brick.x;
       const overlapRight = brick.x + brick.width - ballLeft;
       const overlapTop = ballBottom - brick.y;
@@ -399,20 +418,25 @@ function collideWithPaddle() {
   ball.vy = -(5 + speedIncrement);
 
   ball.y = paddleTop - ball.radius;
+
+  playSound(SOUND_BALL_BOUNCE);
 }
 
 function collideWithWalls() {
   if (ball.x - ball.radius < 0) {
     ball.x = ball.radius;
     ball.vx = -ball.vx;
+    playSound(SOUND_BALL_BOUNCE);
   } else if (ball.x + ball.radius > CANVAS_WIDTH) {
     ball.x = CANVAS_WIDTH - ball.radius;
     ball.vx = -ball.vx;
+    playSound(SOUND_BALL_BOUNCE);
   }
 
   if (ball.y - ball.radius < 0) {
     ball.y = ball.radius;
     ball.vy = -ball.vy;
+    playSound(SOUND_BALL_BOUNCE);
   }
 
   if (ball.y > CANVAS_HEIGHT) {
@@ -441,6 +465,7 @@ function updateInfoPanel() {
   scoreEl.textContent = gameState.score;
   livesEl.textContent = gameState.lives;
   levelEl.textContent = gameState.level;
+  soundStatusEl.textContent = muted ? "Sonido: OFF" : "Sonido: ON";
 }
 
 function draw(timestamp) {
