@@ -79,6 +79,7 @@ let explosions = [];
 **Archivos:** `assets/assets/spritesheet.js`
 
 **Lógica:**
+
 - Corregir `rawImg.src` en `loadSpritesheet()` para que apunte correctamente al PNG real (`assets/assets/spritesheet-breakout.png` relativo a `index.html`).
 - Agregar `function drawExplosionFrame(ctx, color, frameIndex, x, y, w, h)` que llama a `drawFrame(ctx, EXPLOSION_FRAMES[color][frameIndex], x, y, w, h)`.
 
@@ -89,6 +90,7 @@ let explosions = [];
 **Archivos:** `index.html`, `game.js`
 
 **Lógica:**
+
 - Agregar `<script src="assets/assets/spritesheet.js"></script>` antes de `<script src="game.js"></script>`.
 - En `init()`, envolver la llamada a `requestAnimationFrame(loop)` (o el punto donde arranca el loop) para que ocurra dentro del callback de `loadSpritesheet()`.
 
@@ -99,6 +101,7 @@ let explosions = [];
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - Definir `const ROW_COLORS = ["red", "yellow", "green", "cyan", "magenta"];`.
 - En `createBricks()`, asignar `color: ROW_COLORS[row]` a cada ladrillo.
 
@@ -109,6 +112,7 @@ let explosions = [];
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En `drawBricks()`, reemplazar el `fillRect` por `drawSprite(ctx, 'block_' + brick.color, brick.x, brick.y, brick.width, brick.height)`.
 
 **Resultado verificable:** los ladrillos vivos se ven con el arte del spritesheet, con colores distintos por fila.
@@ -118,6 +122,7 @@ let explosions = [];
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - Declarar `let explosions = [];`.
 - Agregar `function updateExplosions(timestamp)`: filtra/elimina del arreglo las explosiones cuyo `timestamp - startTime >= EXPLOSION_DURATION`.
 - Agregar `function drawExplosions()`: para cada explosión activa, calcula `frameIndex = Math.floor(((timestamp - startTime) / EXPLOSION_DURATION) * 4)` (clamp a 3) y llama a `drawExplosionFrame(...)`.
@@ -130,6 +135,7 @@ let explosions = [];
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En `collideWithBricks()`, cuando se marca `brick.alive = false`, además hacer `explosions.push({ x: brick.x, y: brick.y, width: brick.width, height: brick.height, color: brick.color, startTime: timestamp })`.
 - Pasar `timestamp` a `collideWithBricks()` (propagado desde `loop(timestamp)` → `updateBall(timestamp)` → `collideWithBricks(timestamp)`).
 
@@ -140,6 +146,7 @@ let explosions = [];
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En la función de reinicio (tecla R / equivalente a `resetGame`), agregar `explosions = [];`.
 
 **Resultado verificable:** si se reinicia el juego mientras una explosión está animándose, no queda ningún frame residual dibujado tras el reinicio.
@@ -148,15 +155,15 @@ let explosions = [];
 
 ## Criterios de Aceptación
 
-- [ ] Al iniciar el juego, el spritesheet carga sin errores 404 en la consola.
-- [ ] Los ladrillos vivos se renderizan con sprites del spritesheet, con color según su fila.
-- [ ] Al golpear un ladrillo, el puntaje y `bricksRemaining` se actualizan de inmediato.
-- [ ] Al destruir un ladrillo, se reproduce una animación de explosión de 4 frames en su posición, con el color de su fila.
-- [ ] La animación dura ~150ms y luego desaparece por completo, sin dejar rastro.
-- [ ] La animación de explosión no avanza mientras el juego está en estado `"paused"`.
-- [ ] Reiniciar el juego (tecla R) limpia cualquier animación de explosión activa.
-- [ ] No se reproduce ningún sonido al destruir un ladrillo.
-- [ ] Ganar la partida (todos los ladrillos destruidos) sigue funcionando igual que antes, incluso si la última explosión todavía se está animando.
+- [x] Al iniciar el juego, el spritesheet carga sin errores 404 en la consola.
+- [x] Los ladrillos vivos se renderizan con sprites del spritesheet, con color según su fila.
+- [x] Al golpear un ladrillo, el puntaje y `bricksRemaining` se actualizan de inmediato.
+- [x] Al destruir un ladrillo, se reproduce una animación de explosión de 4 frames en su posición, con el color de su fila.
+- [x] La animación dura ~150ms y luego desaparece por completo, sin dejar rastro.
+- [x] La animación de explosión no avanza mientras el juego está en estado `"paused"`.
+- [x] Reiniciar el juego (tecla R) limpia cualquier animación de explosión activa.
+- [x] No se reproduce ningún sonido al destruir un ladrillo.
+- [x] Ganar la partida (todos los ladrillos destruidos) sigue funcionando igual que antes, incluso si la última explosión todavía se está animando.
 
 ---
 
