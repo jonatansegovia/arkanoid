@@ -327,6 +327,8 @@ function collideWithPaddle() {
   ball.vy = -5;
 
   ball.y = paddleTop - ball.radius;
+
+  playSound(SOUND_BALL_BOUNCE);
 }
 
 function collideWithWalls() {
