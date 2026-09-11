@@ -21,43 +21,43 @@ const BALL_SPEED_INCREMENT_PER_LEVEL = 0.5;
 const LEVEL_LAYOUTS = [
   // Nivel 1: completo
   [
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
   ],
   // Nivel 2: hueco central
   [
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,0,0,1,1,1],
-    [1,1,0,0,0,0,1,1],
-    [1,1,1,0,0,1,1,1],
-    [1,1,1,1,1,1,1,1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 0, 0, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
   ],
   // Nivel 3: pirámide
   [
-    [0,0,0,1,1,0,0,0],
-    [0,0,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
   ],
   // Nivel 4: diamante
   [
-    [0,0,0,1,1,0,0,0],
-    [0,0,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,0,1,1,0,0,0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
   ],
   // Nivel 5: columnas verticales alternadas (final)
   [
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
   ],
 ];
 
@@ -184,10 +184,18 @@ function checkWin() {
   if (gameState.bricksRemaining === 0) {
     if (gameState.level < LEVEL_COUNT) {
       gameState.status = "levelcomplete";
-      showOverlay("Nivel " + gameState.level + " completado", "Puntaje: " + gameState.score, "Presiona Espacio para continuar");
+      showOverlay(
+        "Nivel " + gameState.level + " completado",
+        "Puntaje: " + gameState.score,
+        "Presiona Espacio para continuar",
+      );
     } else {
       gameState.status = "gamecomplete";
-      showOverlay("¡Completaste el juego!", "Puntaje final: " + gameState.score, "Presiona R para reiniciar");
+      showOverlay(
+        "¡Completaste el juego!",
+        "Puntaje final: " + gameState.score,
+        "Presiona R para reiniciar",
+      );
     }
   }
 }
@@ -209,7 +217,6 @@ function resetGame() {
   gameState.score = 0;
   gameState.lives = INITIAL_LIVES;
   gameState.status = "waiting";
-  gameState.level = 1;
   hideOverlay();
   explosions = [];
   createBricks();
@@ -306,7 +313,9 @@ function updateBall(timestamp) {
 }
 
 function updateExplosions(timestamp) {
-  explosions = explosions.filter(exp => timestamp - exp.startTime < EXPLOSION_DURATION);
+  explosions = explosions.filter(
+    (exp) => timestamp - exp.startTime < EXPLOSION_DURATION,
+  );
 }
 
 function collideWithBricks(timestamp) {
@@ -334,7 +343,7 @@ function collideWithBricks(timestamp) {
         width: brick.width,
         height: brick.height,
         color: brick.color,
-        startTime: timestamp
+        startTime: timestamp,
       });
       gameState.score += BRICK_SCORE;
       gameState.bricksRemaining--;
@@ -446,7 +455,14 @@ function drawBricks() {
   for (const row of bricks) {
     for (const brick of row) {
       if (!brick || !brick.alive) continue;
-      drawSprite(ctx, 'block_' + brick.color, brick.x, brick.y, brick.width, brick.height);
+      drawSprite(
+        ctx,
+        "block_" + brick.color,
+        brick.x,
+        brick.y,
+        brick.width,
+        brick.height,
+      );
     }
   }
 }
@@ -456,7 +472,15 @@ function drawExplosions(timestamp) {
     const elapsed = timestamp - exp.startTime;
     const progress = Math.min(elapsed / EXPLOSION_DURATION, 1);
     const frameIndex = Math.floor(progress * 4);
-    drawExplosionFrame(ctx, exp.color, frameIndex, exp.x, exp.y, exp.width, exp.height);
+    drawExplosionFrame(
+      ctx,
+      exp.color,
+      frameIndex,
+      exp.x,
+      exp.y,
+      exp.width,
+      exp.height,
+    );
   }
 }
 
