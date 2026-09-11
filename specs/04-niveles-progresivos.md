@@ -1,6 +1,6 @@
 # Niveles Progresivos
 
-**Estado:** Draft
+**Estado:** Aprobado
 **Depends on:** SPEC 01, SPEC 02
 **Date:** 2026-09-10
 **Objetivo:** Reemplazar la grilla única de ladrillos por 5 niveles con patrones geométricos distintos, dificultad creciente (velocidad de bola) y pantalla de transición entre niveles, terminando en una pantalla de victoria final.
@@ -52,43 +52,43 @@ const BALL_SPEED_INCREMENT_PER_LEVEL = 0.5; // px/frame agregado por nivel
 const LEVEL_LAYOUTS = [
   // Nivel 1: completo
   [
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
   ],
   // Nivel 2: hueco central
   [
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,0,0,1,1,1],
-    [1,1,0,0,0,0,1,1],
-    [1,1,1,0,0,1,1,1],
-    [1,1,1,1,1,1,1,1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 0, 0, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
   ],
   // Nivel 3: pirámide
   [
-    [0,0,0,1,1,0,0,0],
-    [0,0,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
   ],
   // Nivel 4: diamante
   [
-    [0,0,0,1,1,0,0,0],
-    [0,0,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,0,1,1,0,0,0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
   ],
   // Nivel 5: columnas verticales alternadas (final)
   [
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
-    [1,0,1,0,1,0,1,0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
   ],
 ];
 ```
@@ -101,7 +101,7 @@ const gameState = {
   lives: INITIAL_LIVES,
   status: "waiting", // agrega nuevos valores: "levelcomplete", "gamecomplete"
   bricksRemaining: 0,
-  level: 1,           // NUEVO — 1..LEVEL_COUNT
+  level: 1, // NUEVO — 1..LEVEL_COUNT
 };
 ```
 
@@ -116,6 +116,7 @@ const gameState = {
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - Agregar `LEVEL_COUNT`, `BALL_SPEED_INCREMENT_PER_LEVEL` y `LEVEL_LAYOUTS` (las 5 matrices de arriba) junto a las demás constantes.
 - Agregar `level: 1` a `gameState`.
 
@@ -126,6 +127,7 @@ const gameState = {
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - Modificar `createBricks()` para recorrer `LEVEL_LAYOUTS[gameState.level - 1]` en vez de generar siempre una celda por cada `row`/`col`.
 - Solo agregar un objeto de ladrillo (`alive: true`, con su `color` por fila) cuando `layout[row][col] === 1`.
 - `gameState.bricksRemaining` se calcula contando las celdas en `1` del layout, no `BRICK_COLS * BRICK_ROWS`.
@@ -137,6 +139,7 @@ const gameState = {
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En `launchBall()`, calcular `vy = BALL_LAUNCH_VY - (gameState.level - 1) * BALL_SPEED_INCREMENT_PER_LEVEL` (más negativo = más rápido hacia arriba) y asignarlo a `ball.vy` en vez del valor fijo.
 - En `collideWithPaddle()`, aplicar el mismo incremento a las magnitudes de `ball.vx` (3 y -3) y `ball.vy` (-5) según `gameState.level`, manteniendo el signo que ya determina la posición de impacto.
 - Los rebotes en `collideWithWalls()` y `collideWithBricks()` no cambian: solo invierten el signo de la velocidad existente, así que heredan el incremento ya aplicado.
@@ -148,6 +151,7 @@ const gameState = {
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - Modificar `checkWin()`: cuando `bricksRemaining === 0`, si `gameState.level < LEVEL_COUNT`, poner `gameState.status = "levelcomplete"` y llamar `showOverlay("Nivel " + gameState.level + " completado", "Puntaje: " + gameState.score, "Presiona Espacio para continuar")`; si `gameState.level === LEVEL_COUNT`, poner `gameState.status = "gamecomplete"` y llamar `showOverlay("¡Completaste el juego!", "Puntaje final: " + gameState.score, "Presiona R para reiniciar")`.
 - Modificar `showOverlay(title, message, hint)` para aceptar un tercer parámetro `hint` y escribirlo en el elemento de hint del overlay (ver paso 6 para el cambio de HTML). Si no se pasa `hint`, usar el texto por defecto actual ("Presiona R para reiniciar"), para no romper las llamadas existentes de pausa/game over.
 - En `loop()`, agregar `"levelcomplete"` y `"gamecomplete"` a la lista de estados que detienen `updatePaddle()`/`updateBall()`/`updateExplosions()` (mismo tratamiento que `"gameover"` y `"win"`).
@@ -159,6 +163,7 @@ const gameState = {
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En el listener de `keydown` (`setupInput()`), en la rama que ya maneja `" "`/`"ArrowUp"` para `launchBall()`, agregar: si `gameState.status === "levelcomplete"`, en vez de lanzar la bola, ejecutar la transición de nivel: `gameState.level++`, `gameState.lives = INITIAL_LIVES`, `explosions = []`, `hideOverlay()`, `createBricks()`, `resetBall()`.
 
 **Resultado verificable:** con el overlay de "Nivel 1 completado" visible, presionar Espacio limpia el overlay, muestra el patrón del nivel 2, resetea vidas a `INITIAL_LIVES`, mantiene el puntaje acumulado, y la bola queda lista para lanzar en la paleta.
@@ -168,6 +173,7 @@ const gameState = {
 **Archivos:** `index.html`, `game.js`
 
 **Lógica:**
+
 - En `index.html`, agregar un `info-item` para nivel junto a Puntaje/Vidas: `<span class="info-label">Nivel</span><span id="level" class="info-value">1</span>`.
 - Agregar un `id` al `<p class="overlay-hint">` existente (ej. `id="overlay-hint"`) para poder actualizarlo desde JS.
 - En `game.js`, agregar `const levelEl = document.getElementById("level");` y `const overlayHint = document.getElementById("overlay-hint");` junto a las demás referencias al DOM.
@@ -181,6 +187,7 @@ const gameState = {
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En `resetGame()`, agregar `gameState.level = 1;` antes de llamar a `createBricks()`.
 
 **Resultado verificable:** estando en el nivel 3 o 4, presionar `R` vuelve al patrón completo del nivel 1, con vidas y puntaje reiniciados a sus valores por defecto.

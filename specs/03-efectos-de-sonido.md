@@ -1,6 +1,6 @@
 # Efectos de Sonido
 
-**Estado:** Draft
+**Estado:** Aprobado
 **Depends on:** SPEC 01, SPEC 02
 **Date:** 2026-09-10
 **Objetivo:** Agregar sonido de rebote de bola (paleta, paredes laterales y techo) y sonido de destrucción de ladrillos, con soporte de mute mediante tecla `M` e indicador visual en el panel de info.
@@ -34,8 +34,8 @@ No se introduce ninguna estructura de datos nueva relevante al modelo del juego.
 
 ```javascript
 // Objetos de audio reutilizados (uno por efecto)
-const SOUND_BALL_BOUNCE = new Audio('assets/sounds/ball-bounce.mp3');
-const SOUND_BREAK = new Audio('assets/sounds/break-sound.mp3');
+const SOUND_BALL_BOUNCE = new Audio("assets/sounds/ball-bounce.mp3");
+const SOUND_BREAK = new Audio("assets/sounds/break-sound.mp3");
 
 // Estado de mute, fuera de gameState (no se resetea con R)
 let muted = false;
@@ -50,6 +50,7 @@ let muted = false;
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - Declarar `SOUND_BALL_BOUNCE`, `SOUND_BREAK` y `let muted = false;`.
 - Agregar `function playSound(audio)`: si `muted` es `true`, no hace nada; si no, `audio.currentTime = 0; audio.play();`.
 
@@ -60,6 +61,7 @@ let muted = false;
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En `collideWithWalls()`, llamar `playSound(SOUND_BALL_BOUNCE)` en los tres casos de rebote (pared izquierda, pared derecha, techo). No se llama en el caso de caída por el suelo (`ball.y > CANVAS_HEIGHT`).
 
 **Resultado verificable:** al rebotar la bola contra cualquier pared o el techo, se escucha `ball-bounce.mp3`; al caer por el suelo, no suena nada.
@@ -69,6 +71,7 @@ let muted = false;
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En `collideWithPaddle()`, tras confirmar la intersección válida (después del `if (!intersects || ball.vy < 0) return;`), llamar `playSound(SOUND_BALL_BOUNCE)`.
 
 **Resultado verificable:** al rebotar la bola contra la paleta, se escucha `ball-bounce.mp3`.
@@ -78,6 +81,7 @@ let muted = false;
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En `collideWithBricks()`, junto con `brick.alive = false` y el `push` a `explosions`, llamar `playSound(SOUND_BREAK)`.
 - No se llama a `playSound(SOUND_BALL_BOUNCE)` en esta función — el rebote contra un ladrillo no reproduce sonido de bola, solo el de destrucción.
 
@@ -88,6 +92,7 @@ let muted = false;
 **Archivos:** `game.js`
 
 **Lógica:**
+
 - En el listener de `keydown` (`setupInput()`), agregar: si `e.key === "m" || e.key === "M"`, `muted = !muted;`.
 
 **Resultado verificable:** presionar `M` alterna el estado; mientras `muted === true`, ningún sonido se reproduce (verificable llamando a `playSound` manualmente o rebotando la bola).
@@ -97,6 +102,7 @@ let muted = false;
 **Archivos:** `index.html`, `game.js`
 
 **Lógica:**
+
 - En `index.html`, agregar un elemento al panel de info junto a score/vidas: `<span id="sound-status">Sonido: ON</span>` (o similar, siguiendo el patrón existente de `scoreEl`/`livesEl`).
 - En `game.js`, agregar `const soundStatusEl = document.getElementById("sound-status");` junto a las demás referencias al DOM.
 - En `updateInfoPanel()`, actualizar `soundStatusEl.textContent = muted ? "Sonido: OFF" : "Sonido: ON";`.
