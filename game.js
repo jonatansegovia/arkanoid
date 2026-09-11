@@ -109,22 +109,30 @@ function createBricks() {
   const gridWidth = BRICK_COLS * BRICK_WIDTH + (BRICK_COLS - 1) * BRICK_GAP;
   const offsetX = (CANVAS_WIDTH - gridWidth) / 2;
 
+  const layout = LEVEL_LAYOUTS[gameState.level - 1];
+  let brickCount = 0;
+
   for (let row = 0; row < BRICK_ROWS; row++) {
     const rowBricks = [];
     for (let col = 0; col < BRICK_COLS; col++) {
-      rowBricks.push({
-        x: offsetX + col * (BRICK_WIDTH + BRICK_GAP),
-        y: BRICK_OFFSET_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
-        width: BRICK_WIDTH,
-        height: BRICK_HEIGHT,
-        color: ROW_COLORS[row],
-        alive: true,
-      });
+      if (layout[row][col] === 1) {
+        rowBricks.push({
+          x: offsetX + col * (BRICK_WIDTH + BRICK_GAP),
+          y: BRICK_OFFSET_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
+          width: BRICK_WIDTH,
+          height: BRICK_HEIGHT,
+          color: ROW_COLORS[row],
+          alive: true,
+        });
+        brickCount++;
+      } else {
+        rowBricks.push(null);
+      }
     }
     bricks.push(rowBricks);
   }
 
-  gameState.bricksRemaining = BRICK_COLS * BRICK_ROWS;
+  gameState.bricksRemaining = brickCount;
 }
 
 // Estado de teclas presionadas
@@ -283,7 +291,7 @@ function updateExplosions(timestamp) {
 function collideWithBricks(timestamp) {
   for (const row of bricks) {
     for (const brick of row) {
-      if (!brick.alive) continue;
+      if (!brick || !brick.alive) continue;
 
       const ballBottom = ball.y + ball.radius;
       const ballTop = ball.y - ball.radius;
@@ -412,7 +420,7 @@ function draw(timestamp) {
 function drawBricks() {
   for (const row of bricks) {
     for (const brick of row) {
-      if (!brick.alive) continue;
+      if (!brick || !brick.alive) continue;
       drawSprite(ctx, 'block_' + brick.color, brick.x, brick.y, brick.width, brick.height);
     }
   }
