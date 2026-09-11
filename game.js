@@ -333,14 +333,17 @@ function collideWithWalls() {
   if (ball.x - ball.radius < 0) {
     ball.x = ball.radius;
     ball.vx = -ball.vx;
+    playSound(SOUND_BALL_BOUNCE);
   } else if (ball.x + ball.radius > CANVAS_WIDTH) {
     ball.x = CANVAS_WIDTH - ball.radius;
     ball.vx = -ball.vx;
+    playSound(SOUND_BALL_BOUNCE);
   }
 
   if (ball.y - ball.radius < 0) {
     ball.y = ball.radius;
     ball.vy = -ball.vy;
+    playSound(SOUND_BALL_BOUNCE);
   }
 
   if (ball.y > CANVAS_HEIGHT) {
