@@ -191,6 +191,9 @@ function setupInput() {
     if (e.key === "r" || e.key === "R") {
       resetGame();
     }
+    if (e.key === "m" || e.key === "M") {
+      muted = !muted;
+    }
   });
 
   document.addEventListener("keyup", (e) => {
