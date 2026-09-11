@@ -14,6 +14,7 @@ const BRICK_HEIGHT = 15;
 const BRICK_GAP = 6;
 const BRICK_OFFSET_TOP = 60;
 const BRICK_SCORE = 10;
+const ROW_COLORS = ["red", "yellow", "green", "cyan", "magenta"];
 
 // Referencias al DOM
 const canvas = document.getElementById("gameCanvas");
@@ -30,7 +31,7 @@ const paddle = {
   y: CANVAS_HEIGHT - 30,
   width: PADDLE_WIDTH,
   height: PADDLE_HEIGHT,
-  speed: PADDLE_SPEED
+  speed: PADDLE_SPEED,
 };
 
 // Estado de la bola
@@ -40,7 +41,7 @@ const ball = {
   radius: BALL_RADIUS,
   vx: 0,
   vy: 0,
-  launched: false
+  launched: false,
 };
 
 // Estado general del juego
@@ -48,11 +49,14 @@ const gameState = {
   score: 0,
   lives: INITIAL_LIVES,
   status: "waiting",
-  bricksRemaining: 0
+  bricksRemaining: 0,
 };
 
 // Cuadrícula de ladrillos (5 filas x 8 columnas)
 let bricks = [];
+
+// Explosiones activas
+let explosions = [];
 
 function createBricks() {
   bricks = [];
@@ -67,7 +71,8 @@ function createBricks() {
         y: BRICK_OFFSET_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
         width: BRICK_WIDTH,
         height: BRICK_HEIGHT,
-        alive: true
+        color: ROW_COLORS[row],
+        alive: true,
       });
     }
     bricks.push(rowBricks);
@@ -79,7 +84,7 @@ function createBricks() {
 // Estado de teclas presionadas
 const keys = {
   ArrowLeft: false,
-  ArrowRight: false
+  ArrowRight: false,
 };
 
 // Guarda el estado previo a pausar, para poder reanudarlo
@@ -89,7 +94,7 @@ function init() {
   setupInput();
   createBricks();
   resetBall();
-  requestAnimationFrame(loop);
+  loadSpritesheet(() => requestAnimationFrame(loop));
 }
 
 function resetBall() {
@@ -144,6 +149,7 @@ function resetGame() {
   gameState.lives = INITIAL_LIVES;
   gameState.status = "waiting";
   hideOverlay();
+  explosions = [];
   createBricks();
   resetBall();
 }
@@ -211,7 +217,7 @@ function updatePaddle() {
   }
 }
 
-function updateBall() {
+function updateBall(timestamp) {
   if (!ball.launched) {
     ball.x = paddle.x;
     ball.y = paddle.y - paddle.height - ball.radius;
@@ -221,10 +227,14 @@ function updateBall() {
   ball.y += ball.vy;
   collideWithWalls();
   collideWithPaddle();
-  collideWithBricks();
+  collideWithBricks(timestamp);
 }
 
-function collideWithBricks() {
+function updateExplosions(timestamp) {
+  explosions = explosions.filter(exp => timestamp - exp.startTime < EXPLOSION_DURATION);
+}
+
+function collideWithBricks(timestamp) {
   for (const row of bricks) {
     for (const brick of row) {
       if (!brick.alive) continue;
@@ -243,6 +253,14 @@ function collideWithBricks() {
       if (!intersects) continue;
 
       brick.alive = false;
+      explosions.push({
+        x: brick.x,
+        y: brick.y,
+        width: brick.width,
+        height: brick.height,
+        color: brick.color,
+        startTime: timestamp
+      });
       gameState.score += BRICK_SCORE;
       gameState.bricksRemaining--;
       checkWin();
@@ -324,9 +342,10 @@ function loop(timestamp) {
     gameState.status !== "paused"
   ) {
     updatePaddle();
-    updateBall();
+    updateBall(timestamp);
+    updateExplosions(timestamp);
   }
-  draw();
+  draw(timestamp);
   updateInfoPanel();
   requestAnimationFrame(loop);
 }
@@ -336,20 +355,29 @@ function updateInfoPanel() {
   livesEl.textContent = gameState.lives;
 }
 
-function draw() {
+function draw(timestamp) {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawBricks();
+  drawExplosions(timestamp);
   drawPaddle();
   drawBall();
 }
 
 function drawBricks() {
-  ctx.fillStyle = "#4dd0e1";
   for (const row of bricks) {
     for (const brick of row) {
       if (!brick.alive) continue;
-      ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+      drawSprite(ctx, 'block_' + brick.color, brick.x, brick.y, brick.width, brick.height);
     }
+  }
+}
+
+function drawExplosions(timestamp) {
+  for (const exp of explosions) {
+    const elapsed = timestamp - exp.startTime;
+    const progress = Math.min(elapsed / EXPLOSION_DURATION, 1);
+    const frameIndex = Math.floor(progress * 4);
+    drawExplosionFrame(ctx, exp.color, frameIndex, exp.x, exp.y, exp.width, exp.height);
   }
 }
 
@@ -366,7 +394,7 @@ function drawPaddle() {
     paddle.x - paddle.width / 2,
     paddle.y,
     paddle.width,
-    paddle.height
+    paddle.height,
   );
 }
 
