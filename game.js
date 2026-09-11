@@ -234,7 +234,16 @@ function setupInput() {
       keys[e.key] = true;
     }
     if (e.key === "ArrowUp" || e.key === " ") {
-      launchBall();
+      if (gameState.status === "levelcomplete") {
+        gameState.level++;
+        gameState.lives = INITIAL_LIVES;
+        explosions = [];
+        hideOverlay();
+        createBricks();
+        resetBall();
+      } else {
+        launchBall();
+      }
     }
     if (e.key === "p" || e.key === "P") {
       togglePause();
