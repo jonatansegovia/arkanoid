@@ -196,19 +196,19 @@ const gameState = {
 
 ## Criterios de Aceptación
 
-- [ ] El nivel 1 muestra la grilla completa de ladrillos (igual que el comportamiento actual).
-- [ ] El nivel 2 muestra un patrón con un hueco vacío en el centro de la grilla.
-- [ ] El nivel 3 muestra un patrón en forma de pirámide.
-- [ ] El nivel 4 muestra un patrón en forma de diamante.
-- [ ] El nivel 5 muestra un patrón de columnas verticales alternadas.
-- [ ] Al destruir todos los ladrillos de un nivel 1 a 4, aparece la pantalla "Nivel X completado" y el juego se detiene (bola, paleta y explosiones dejan de actualizarse).
-- [ ] Presionar Espacio con la pantalla de "Nivel completado" visible avanza al siguiente nivel: cambia el patrón de ladrillos, resetea la bola a la paleta, y el jugador puede volver a lanzarla.
-- [ ] Al avanzar de nivel, las vidas vuelven a `INITIAL_LIVES` y el puntaje NO se reinicia (sigue sumando desde el valor previo).
-- [ ] La velocidad de la bola (al lanzarla y al rebotar en la paleta) es visiblemente mayor en el nivel 3 que en el nivel 1.
-- [ ] Al destruir todos los ladrillos del nivel 5 (último), aparece la pantalla "¡Completaste el juego!" en vez de una pantalla de "Nivel completado", y el juego se detiene.
-- [ ] El panel de info muestra el nivel actual y se actualiza inmediatamente al avanzar de nivel.
-- [ ] Reiniciar el juego con `R` desde cualquier nivel vuelve siempre al nivel 1, con vidas, puntaje y patrón de ladrillos reiniciados a sus valores iniciales.
-- [ ] Perder todas las vidas en cualquier nivel (no solo el 1) sigue mostrando "Game Over" con el puntaje acumulado hasta ese momento.
+- [x] El nivel 1 muestra la grilla completa de ladrillos (igual que el comportamiento actual).
+- [x] El nivel 2 muestra un patrón con un hueco vacío en el centro de la grilla.
+- [x] El nivel 3 muestra un patrón en forma de pirámide.
+- [x] El nivel 4 muestra un patrón en forma de diamante.
+- [x] El nivel 5 muestra un patrón de columnas verticales alternadas.
+- [x] Al destruir todos los ladrillos de un nivel 1 a 4, aparece la pantalla "Nivel X completado" y el juego se detiene (bola, paleta y explosiones dejan de actualizarse).
+- [x] Presionar Espacio con la pantalla de "Nivel completado" visible avanza al siguiente nivel: cambia el patrón de ladrillos, resetea la bola a la paleta, y el jugador puede volver a lanzarla.
+- [x] Al avanzar de nivel, las vidas vuelven a `INITIAL_LIVES` y el puntaje NO se reinicia (sigue sumando desde el valor previo).
+- [x] La velocidad de la bola (al lanzarla y al rebotar en la paleta) es visiblemente mayor en el nivel 3 que en el nivel 1.
+- [x] Al destruir todos los ladrillos del nivel 5 (último), aparece la pantalla "¡Completaste el juego!" en vez de una pantalla de "Nivel completado", y el juego se detiene.
+- [x] El panel de info muestra el nivel actual y se actualiza inmediatamente al avanzar de nivel.
+- [x] Reiniciar el juego con `R` desde cualquier nivel vuelve siempre al nivel 1, con vidas, puntaje y patrón de ladrillos reiniciados a sus valores iniciales.
+- [x] Perder todas las vidas en cualquier nivel (no solo el 1) sigue mostrando "Game Over" con el puntaje acumulado hasta ese momento.
 
 ---
 
