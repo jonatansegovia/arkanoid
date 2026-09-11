@@ -278,6 +278,8 @@ function collideWithBricks(timestamp) {
       gameState.bricksRemaining--;
       checkWin();
 
+      playSound(SOUND_BREAK);
+
       const overlapLeft = ballRight - brick.x;
       const overlapRight = brick.x + brick.width - ballLeft;
       const overlapTop = ballBottom - brick.y;
