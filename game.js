@@ -15,6 +15,51 @@ const BRICK_GAP = 6;
 const BRICK_OFFSET_TOP = 60;
 const BRICK_SCORE = 10;
 const ROW_COLORS = ["red", "yellow", "green", "cyan", "magenta"];
+const LEVEL_COUNT = 5;
+const BALL_SPEED_INCREMENT_PER_LEVEL = 0.5;
+
+const LEVEL_LAYOUTS = [
+  // Nivel 1: completo
+  [
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+  ],
+  // Nivel 2: hueco central
+  [
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,0,0,1,1,1],
+    [1,1,0,0,0,0,1,1],
+    [1,1,1,0,0,1,1,1],
+    [1,1,1,1,1,1,1,1],
+  ],
+  // Nivel 3: pirámide
+  [
+    [0,0,0,1,1,0,0,0],
+    [0,0,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+  ],
+  // Nivel 4: diamante
+  [
+    [0,0,0,1,1,0,0,0],
+    [0,0,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,0],
+    [0,0,1,1,1,1,0,0],
+    [0,0,0,1,1,0,0,0],
+  ],
+  // Nivel 5: columnas verticales alternadas (final)
+  [
+    [1,0,1,0,1,0,1,0],
+    [1,0,1,0,1,0,1,0],
+    [1,0,1,0,1,0,1,0],
+    [1,0,1,0,1,0,1,0],
+    [1,0,1,0,1,0,1,0],
+  ],
+];
 
 // Referencias al DOM
 const canvas = document.getElementById("gameCanvas");
@@ -50,6 +95,7 @@ const gameState = {
   lives: INITIAL_LIVES,
   status: "waiting",
   bricksRemaining: 0,
+  level: 1,
 };
 
 // Cuadrícula de ladrillos (5 filas x 8 columnas)
