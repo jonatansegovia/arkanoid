@@ -15,6 +15,51 @@ const BRICK_GAP = 6;
 const BRICK_OFFSET_TOP = 60;
 const BRICK_SCORE = 10;
 const ROW_COLORS = ["red", "yellow", "green", "cyan", "magenta"];
+const LEVEL_COUNT = 5;
+const BALL_SPEED_INCREMENT_PER_LEVEL = 0.5;
+
+const LEVEL_LAYOUTS = [
+  // Nivel 1: completo
+  [
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+  ],
+  // Nivel 2: hueco central
+  [
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 0, 0, 0, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+  ],
+  // Nivel 3: pirámide
+  [
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+  ],
+  // Nivel 4: diamante
+  [
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+  ],
+  // Nivel 5: columnas verticales alternadas (final)
+  [
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+  ],
+];
 
 // Referencias al DOM
 const canvas = document.getElementById("gameCanvas");
@@ -24,6 +69,7 @@ const overlayTitle = document.getElementById("overlay-title");
 const overlayMessage = document.getElementById("overlay-message");
 const scoreEl = document.getElementById("score");
 const livesEl = document.getElementById("lives");
+const levelEl = document.getElementById("level");
 
 // Estado de la paleta
 const paddle = {
@@ -50,6 +96,7 @@ const gameState = {
   lives: INITIAL_LIVES,
   status: "waiting",
   bricksRemaining: 0,
+  level: 1,
 };
 
 // Cuadrícula de ladrillos (5 filas x 8 columnas)
@@ -63,22 +110,30 @@ function createBricks() {
   const gridWidth = BRICK_COLS * BRICK_WIDTH + (BRICK_COLS - 1) * BRICK_GAP;
   const offsetX = (CANVAS_WIDTH - gridWidth) / 2;
 
+  const layout = LEVEL_LAYOUTS[gameState.level - 1];
+  let brickCount = 0;
+
   for (let row = 0; row < BRICK_ROWS; row++) {
     const rowBricks = [];
     for (let col = 0; col < BRICK_COLS; col++) {
-      rowBricks.push({
-        x: offsetX + col * (BRICK_WIDTH + BRICK_GAP),
-        y: BRICK_OFFSET_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
-        width: BRICK_WIDTH,
-        height: BRICK_HEIGHT,
-        color: ROW_COLORS[row],
-        alive: true,
-      });
+      if (layout[row][col] === 1) {
+        rowBricks.push({
+          x: offsetX + col * (BRICK_WIDTH + BRICK_GAP),
+          y: BRICK_OFFSET_TOP + row * (BRICK_HEIGHT + BRICK_GAP),
+          width: BRICK_WIDTH,
+          height: BRICK_HEIGHT,
+          color: ROW_COLORS[row],
+          alive: true,
+        });
+        brickCount++;
+      } else {
+        rowBricks.push(null);
+      }
     }
     bricks.push(rowBricks);
   }
 
-  gameState.bricksRemaining = BRICK_COLS * BRICK_ROWS;
+  gameState.bricksRemaining = brickCount;
 }
 
 // Estado de teclas presionadas
@@ -109,7 +164,8 @@ function resetBall() {
 function launchBall() {
   if (ball.launched) return;
   ball.launched = true;
-  ball.vy = BALL_LAUNCH_VY;
+  const speedIncrement = (gameState.level - 1) * BALL_SPEED_INCREMENT_PER_LEVEL;
+  ball.vy = BALL_LAUNCH_VY - speedIncrement;
   ball.vx = 0;
   gameState.status = "playing";
 }
@@ -126,8 +182,21 @@ function loseLife() {
 
 function checkWin() {
   if (gameState.bricksRemaining === 0) {
-    gameState.status = "win";
-    showOverlay("¡Ganaste!", `Puntaje final: ${gameState.score}`);
+    if (gameState.level < LEVEL_COUNT) {
+      gameState.status = "levelcomplete";
+      showOverlay(
+        "Nivel " + gameState.level + " completado",
+        "Puntaje: " + gameState.score,
+        "Presiona Espacio para continuar",
+      );
+    } else {
+      gameState.status = "gamecomplete";
+      showOverlay(
+        "¡Completaste el juego!",
+        "Puntaje final: " + gameState.score,
+        "Presiona R para reiniciar",
+      );
+    }
   }
 }
 
@@ -154,9 +223,13 @@ function resetGame() {
   resetBall();
 }
 
-function showOverlay(title, message) {
+function showOverlay(title, message, hint) {
   overlayTitle.textContent = title;
   overlayMessage.textContent = message;
+  const overlayHintEl = document.getElementById("overlay-hint");
+  if (overlayHintEl) {
+    overlayHintEl.textContent = hint || "Presiona R para reiniciar";
+  }
   overlay.style.display = "flex";
 }
 
@@ -170,7 +243,16 @@ function setupInput() {
       keys[e.key] = true;
     }
     if (e.key === "ArrowUp" || e.key === " ") {
-      launchBall();
+      if (gameState.status === "levelcomplete") {
+        gameState.level++;
+        gameState.lives = INITIAL_LIVES;
+        explosions = [];
+        hideOverlay();
+        createBricks();
+        resetBall();
+      } else {
+        launchBall();
+      }
     }
     if (e.key === "p" || e.key === "P") {
       togglePause();
@@ -231,13 +313,15 @@ function updateBall(timestamp) {
 }
 
 function updateExplosions(timestamp) {
-  explosions = explosions.filter(exp => timestamp - exp.startTime < EXPLOSION_DURATION);
+  explosions = explosions.filter(
+    (exp) => timestamp - exp.startTime < EXPLOSION_DURATION,
+  );
 }
 
 function collideWithBricks(timestamp) {
   for (const row of bricks) {
     for (const brick of row) {
-      if (!brick.alive) continue;
+      if (!brick || !brick.alive) continue;
 
       const ballBottom = ball.y + ball.radius;
       const ballTop = ball.y - ball.radius;
@@ -259,7 +343,7 @@ function collideWithBricks(timestamp) {
         width: brick.width,
         height: brick.height,
         color: brick.color,
-        startTime: timestamp
+        startTime: timestamp,
       });
       gameState.score += BRICK_SCORE;
       gameState.bricksRemaining--;
@@ -303,15 +387,16 @@ function collideWithPaddle() {
   if (!intersects || ball.vy < 0) return;
 
   const hitPosition = (ball.x - paddleLeft) / paddle.width; // 0..1
+  const speedIncrement = (gameState.level - 1) * BALL_SPEED_INCREMENT_PER_LEVEL;
 
   if (hitPosition < 1 / 3) {
-    ball.vx = -3;
+    ball.vx = -(3 + speedIncrement);
   } else if (hitPosition > 2 / 3) {
-    ball.vx = 3;
+    ball.vx = 3 + speedIncrement;
   } else {
     ball.vx = 0;
   }
-  ball.vy = -5;
+  ball.vy = -(5 + speedIncrement);
 
   ball.y = paddleTop - ball.radius;
 }
@@ -339,7 +424,9 @@ function loop(timestamp) {
   if (
     gameState.status !== "gameover" &&
     gameState.status !== "win" &&
-    gameState.status !== "paused"
+    gameState.status !== "paused" &&
+    gameState.status !== "levelcomplete" &&
+    gameState.status !== "gamecomplete"
   ) {
     updatePaddle();
     updateBall(timestamp);
@@ -353,6 +440,7 @@ function loop(timestamp) {
 function updateInfoPanel() {
   scoreEl.textContent = gameState.score;
   livesEl.textContent = gameState.lives;
+  levelEl.textContent = gameState.level;
 }
 
 function draw(timestamp) {
@@ -366,8 +454,15 @@ function draw(timestamp) {
 function drawBricks() {
   for (const row of bricks) {
     for (const brick of row) {
-      if (!brick.alive) continue;
-      drawSprite(ctx, 'block_' + brick.color, brick.x, brick.y, brick.width, brick.height);
+      if (!brick || !brick.alive) continue;
+      drawSprite(
+        ctx,
+        "block_" + brick.color,
+        brick.x,
+        brick.y,
+        brick.width,
+        brick.height,
+      );
     }
   }
 }
@@ -377,7 +472,15 @@ function drawExplosions(timestamp) {
     const elapsed = timestamp - exp.startTime;
     const progress = Math.min(elapsed / EXPLOSION_DURATION, 1);
     const frameIndex = Math.floor(progress * 4);
-    drawExplosionFrame(ctx, exp.color, frameIndex, exp.x, exp.y, exp.width, exp.height);
+    drawExplosionFrame(
+      ctx,
+      exp.color,
+      frameIndex,
+      exp.x,
+      exp.y,
+      exp.width,
+      exp.height,
+    );
   }
 }
 

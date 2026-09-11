@@ -113,16 +113,16 @@ let muted = false;
 
 ## Criterios de Aceptación
 
-- [ ] Al rebotar la bola contra la paleta, suena `ball-bounce.mp3`.
-- [ ] Al rebotar la bola contra la pared izquierda o derecha, suena `ball-bounce.mp3`.
-- [ ] Al rebotar la bola contra el techo, suena `ball-bounce.mp3`.
-- [ ] Al caer la bola por el suelo (pérdida de vida), NO suena `ball-bounce.mp3`.
-- [ ] Al destruir un ladrillo, suena `break-sound.mp3` y NO suena `ball-bounce.mp3` en ese mismo golpe.
-- [ ] Presionar `M` activa/desactiva el mute; mientras está muteado, ningún sonido se reproduce.
-- [ ] El panel de info muestra el estado de sonido ("Sonido: ON"/"Sonido: OFF") y se actualiza inmediatamente al presionar `M`.
-- [ ] Reiniciar el juego (`R`) no altera el estado de mute.
-- [ ] Rebotes rápidos consecutivos reproducen el sonido cada vez, reiniciando desde el principio si el anterior aún estaba sonando.
-- [ ] No hay errores 404 ni de reproducción en la consola del navegador.
+- [x] Al rebotar la bola contra la paleta, suena `ball-bounce.mp3`.
+- [x] Al rebotar la bola contra la pared izquierda o derecha, suena `ball-bounce.mp3`.
+- [x] Al rebotar la bola contra el techo, suena `ball-bounce.mp3`.
+- [x] Al caer la bola por el suelo (pérdida de vida), NO suena `ball-bounce.mp3`.
+- [x] Al destruir un ladrillo, suena `break-sound.mp3` y NO suena `ball-bounce.mp3` en ese mismo golpe.
+- [x] Presionar `M` activa/desactiva el mute; mientras está muteado, ningún sonido se reproduce.
+- [x] El panel de info muestra el estado de sonido ("Sonido: ON"/"Sonido: OFF") y se actualiza inmediatamente al presionar `M`.
+- [x] Reiniciar el juego (`R`) no altera el estado de mute.
+- [x] Rebotes rápidos consecutivos reproducen el sonido cada vez, reiniciando desde el principio si el anterior aún estaba sonando.
+- [x] No hay errores 404 ni de reproducción en la consola del navegador.
 
 ---
 
