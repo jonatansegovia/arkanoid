@@ -163,7 +163,8 @@ function resetBall() {
 function launchBall() {
   if (ball.launched) return;
   ball.launched = true;
-  ball.vy = BALL_LAUNCH_VY;
+  const speedIncrement = (gameState.level - 1) * BALL_SPEED_INCREMENT_PER_LEVEL;
+  ball.vy = BALL_LAUNCH_VY - speedIncrement;
   ball.vx = 0;
   gameState.status = "playing";
 }
@@ -357,15 +358,16 @@ function collideWithPaddle() {
   if (!intersects || ball.vy < 0) return;
 
   const hitPosition = (ball.x - paddleLeft) / paddle.width; // 0..1
+  const speedIncrement = (gameState.level - 1) * BALL_SPEED_INCREMENT_PER_LEVEL;
 
   if (hitPosition < 1 / 3) {
-    ball.vx = -3;
+    ball.vx = -(3 + speedIncrement);
   } else if (hitPosition > 2 / 3) {
-    ball.vx = 3;
+    ball.vx = 3 + speedIncrement;
   } else {
     ball.vx = 0;
   }
-  ball.vy = -5;
+  ball.vy = -(5 + speedIncrement);
 
   ball.y = paddleTop - ball.radius;
 }
