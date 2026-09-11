@@ -54,6 +54,7 @@ body {
   gap: 8px;
   background-color: rgba(0, 0, 0, 0.75);
   text-align: center;
+  line-height: normal;
 }
 
 .overlay h2 {
