@@ -69,6 +69,7 @@ const overlayTitle = document.getElementById("overlay-title");
 const overlayMessage = document.getElementById("overlay-message");
 const scoreEl = document.getElementById("score");
 const livesEl = document.getElementById("lives");
+const levelEl = document.getElementById("level");
 
 // Estado de la paleta
 const paddle = {
@@ -429,6 +430,7 @@ function loop(timestamp) {
 function updateInfoPanel() {
   scoreEl.textContent = gameState.score;
   livesEl.textContent = gameState.lives;
+  levelEl.textContent = gameState.level;
 }
 
 function draw(timestamp) {
