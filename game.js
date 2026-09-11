@@ -16,6 +16,19 @@ const BRICK_OFFSET_TOP = 60;
 const BRICK_SCORE = 10;
 const ROW_COLORS = ["red", "yellow", "green", "cyan", "magenta"];
 
+// Objetos de audio reutilizados (uno por efecto)
+const SOUND_BALL_BOUNCE = new Audio('assets/sounds/ball-bounce.mp3');
+const SOUND_BREAK = new Audio('assets/sounds/break-sound.mp3');
+
+// Estado de mute, fuera de gameState (no se resetea con R)
+let muted = false;
+
+function playSound(audio) {
+  if (muted) return;
+  audio.currentTime = 0;
+  audio.play();
+}
+
 // Referencias al DOM
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
