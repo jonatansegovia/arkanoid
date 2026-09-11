@@ -181,8 +181,13 @@ function loseLife() {
 
 function checkWin() {
   if (gameState.bricksRemaining === 0) {
-    gameState.status = "win";
-    showOverlay("¡Ganaste!", `Puntaje final: ${gameState.score}`);
+    if (gameState.level < LEVEL_COUNT) {
+      gameState.status = "levelcomplete";
+      showOverlay("Nivel " + gameState.level + " completado", "Puntaje: " + gameState.score, "Presiona Espacio para continuar");
+    } else {
+      gameState.status = "gamecomplete";
+      showOverlay("¡Completaste el juego!", "Puntaje final: " + gameState.score, "Presiona R para reiniciar");
+    }
   }
 }
 
@@ -209,9 +214,13 @@ function resetGame() {
   resetBall();
 }
 
-function showOverlay(title, message) {
+function showOverlay(title, message, hint) {
   overlayTitle.textContent = title;
   overlayMessage.textContent = message;
+  const overlayHintEl = document.getElementById("overlay-hint");
+  if (overlayHintEl) {
+    overlayHintEl.textContent = hint || "Presiona R para reiniciar";
+  }
   overlay.style.display = "flex";
 }
 
@@ -395,7 +404,9 @@ function loop(timestamp) {
   if (
     gameState.status !== "gameover" &&
     gameState.status !== "win" &&
-    gameState.status !== "paused"
+    gameState.status !== "paused" &&
+    gameState.status !== "levelcomplete" &&
+    gameState.status !== "gamecomplete"
   ) {
     updatePaddle();
     updateBall(timestamp);
