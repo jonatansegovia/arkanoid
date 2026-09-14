@@ -84,6 +84,7 @@ const scoreEl = document.getElementById("score");
 const livesEl = document.getElementById("lives");
 const levelEl = document.getElementById("level");
 const soundStatusEl = document.getElementById("sound-status");
+const levelButtonsEl = document.getElementById("level-buttons");
 
 // Estado de la paleta
 const paddle = {
@@ -161,9 +162,38 @@ let statusBeforePause = "waiting";
 
 function init() {
   setupInput();
+  setupLevelButtons();
   createBricks();
   resetBall();
   loadSpritesheet(() => requestAnimationFrame(loop));
+}
+
+function setupLevelButtons() {
+  for (let i = 1; i <= LEVEL_COUNT; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = "level-btn";
+    btn.addEventListener("click", () => goToLevel(i));
+    levelButtonsEl.appendChild(btn);
+  }
+  updateLevelButtons();
+}
+
+function updateLevelButtons() {
+  const buttons = levelButtonsEl.querySelectorAll(".level-btn");
+  buttons.forEach((btn, index) => {
+    btn.classList.toggle("active", index + 1 === gameState.level);
+  });
+}
+
+function goToLevel(levelNumber) {
+  gameState.level = levelNumber;
+  gameState.lives = INITIAL_LIVES;
+  explosions = [];
+  hideOverlay();
+  createBricks();
+  resetBall();
+  updateLevelButtons();
 }
 
 function resetBall() {
@@ -229,12 +259,14 @@ function togglePause() {
 
 function resetGame() {
   gameState.score = 0;
+  gameState.level = 1;
   gameState.lives = INITIAL_LIVES;
   gameState.status = "waiting";
   hideOverlay();
   explosions = [];
   createBricks();
   resetBall();
+  updateLevelButtons();
 }
 
 function showOverlay(title, message, hint) {
@@ -258,12 +290,7 @@ function setupInput() {
     }
     if (e.key === "ArrowUp" || e.key === " ") {
       if (gameState.status === "levelcomplete") {
-        gameState.level++;
-        gameState.lives = INITIAL_LIVES;
-        explosions = [];
-        hideOverlay();
-        createBricks();
-        resetBall();
+        goToLevel(gameState.level + 1);
       } else {
         launchBall();
       }
@@ -496,7 +523,7 @@ function drawExplosions(timestamp) {
   for (const exp of explosions) {
     const elapsed = timestamp - exp.startTime;
     const progress = Math.min(elapsed / EXPLOSION_DURATION, 1);
-    const frameIndex = Math.floor(progress * 4);
+    const frameIndex = Math.min(Math.floor(progress * 4), 3);
     drawExplosionFrame(
       ctx,
       exp.color,
