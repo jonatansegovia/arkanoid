@@ -317,6 +317,15 @@ function setupInput() {
     const mouseX = e.clientX - rect.left;
     updatePaddlePosition(mouseX);
   });
+
+  canvas.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return;
+    if (gameState.status === "levelcomplete") {
+      goToLevel(gameState.level + 1);
+    } else {
+      launchBall();
+    }
+  });
 }
 
 function updatePaddlePosition(x) {
